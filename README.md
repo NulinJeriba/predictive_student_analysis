@@ -45,8 +45,7 @@ predictive-student-performance/
 - Node.js 14+
 - npm or yarn
 
-### Backend Setup
-````markdown
+# Backend Setup
 # Predictive Analysis of Student Performance
 
 An AI-powered application to help teachers and administrators identify at-risk students by analyzing marks, attendance, and other signals. This repository contains a Flask backend (ML + API), a React frontend, and optional GenAI components for explanation and guidance.
@@ -203,5 +202,3 @@ Please open issues and PRs. Add tests for any behavior changes.
 ---
 
 Short and actionable: open http://localhost:3000 after starting the frontend and use the UI to upload a CSV and run predictions.
-
-````
