@@ -46,265 +46,162 @@ predictive-student-performance/
 - npm or yarn
 
 ### Backend Setup
+````markdown
+# Predictive Analysis of Student Performance
 
-1. Navigate to the backend directory:
+An AI-powered application to help teachers and administrators identify at-risk students by analyzing marks, attendance, and other signals. This repository contains a Flask backend (ML + API), a React frontend, and optional GenAI components for explanation and guidance.
+
+## What you'll find here
+
+- backend/: Flask API, preprocessing, model code, sample data and models
+- frontend/: React UI and components
+- genai/: Chatbot + RAG pipeline (optional OpenAI integration)
+- tests/: Unit tests for preprocessing, prediction and API
+- quickstart.py, train_models.py, setup.sh — helper scripts
+
+## Key features
+
+- Upload CSVs and run batch predictions
+- Random Forest and SVM models with explainability
+- Interactive dashboard with risk indicators
+- GenAI chatbot (optional) for guidance and explanations
+- Unit tests and example data
+
+## Quick contract (inputs / outputs)
+
+- Input: CSV file with at least `student_id` and academic/attendance columns
+- Output: per-student risk probabilities and explanations (JSON / UI)
+- Error modes: malformed CSV, missing required columns, model missing
+
+## Prerequisites
+
+- Python 3.8+
+- Node.js 14+ and npm (or yarn)
+
+## Setup (recommended: one-liner)
+
+From project root, make the setup script executable and run it (Unix/macOS):
+
+```bash
+chmod +x setup.sh
+./setup.sh
+```
+
+If you prefer manual setup, follow the backend/frontend steps below.
+
+### Backend (manual)
+
 ```bash
 cd backend
-```
-
-2. Create and activate a virtual environment:
-```bash
 python3 -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-```
-
-3. Install dependencies:
-```bash
+source venv/bin/activate
 pip install -r requirements.txt
-```
-
-4. Create `.env` file (copy from `.env.example`):
-```bash
-cp ../.env.example ../.env
-```
-
-5. Run the Flask server:
-```bash
+cp ../.env.example ../.env   # then edit .env as needed
 python app.py
 ```
 
-The backend will run on `http://localhost:5000`
+Default backend URL: http://localhost:5000
 
-### Frontend Setup
+### Frontend
 
-1. Navigate to the frontend directory:
 ```bash
 cd frontend
-```
-
-2. Install dependencies:
-```bash
 npm install
-```
-
-3. Start the development server:
-```bash
 npm start
 ```
 
-The frontend will run on `http://localhost:3000`
+Default frontend URL: http://localhost:3000
 
-## 📊 Usage
+## Quick demo
 
-### 1. Upload Student Data
+To run the quick demo which loads sample data, trains models (if needed) and runs predictions:
 
-- Click "Upload" or drag-and-drop a CSV file
-- The system accepts files with columns like:
-  - `student_id` or `roll_number`
-  - Academic marks (e.g., `math_marks`, `science_marks`)
-  - `attendance` and `total_classes`
-  - `assignments_completed` and `total_assignments`
-
-### 2. Run Prediction
-
-- Select model type (Random Forest or SVM)
-- Click "Run Prediction"
-- View results with risk probabilities
-
-### 3. Analyze Results
-
-- View overall class statistics
-- Click on individual students for detailed analysis
-- See risk factors and recommendations
-
-### 4. Use AI Chatbot
-
-- Ask questions about predictions
-- Get intervention recommendations
-- Understand factors affecting student performance
-
-## 🧪 Sample Data
-
-A sample dataset is included at `backend/data/sample_data.csv` with 40 student records including:
-- Subject marks (Math, Science, English, History)
-- Attendance rates
-- Assignment completion rates
-- Previous performance data
-
-## 🔬 Machine Learning Models
-
-### Random Forest Classifier
-- Ensemble learning method
-- Handles non-linear relationships
-- Provides feature importance
-- Robust to outliers
-
-### Support Vector Machine (SVM)
-- Effective for binary classification
-- Works well with high-dimensional data
-- Kernel-based approach
-
-### Model Training
-Models automatically train on first data upload if pre-trained models don't exist. Training includes:
-- Data preprocessing and feature engineering
-- 80-20 train-test split
-- Cross-validation (5-fold)
-- Performance metrics (accuracy, precision, recall, F1-score)
-
-## 🤖 GenAI Integration
-
-### Chatbot Features
-- Rule-based responses (fallback)
-- OpenAI GPT integration (optional)
-- Context-aware answers using RAG
-
-### RAG Pipeline
-- Indexes student data for quick retrieval
-- Maintains educational knowledge base
-- Retrieves similar cases for comparison
-- Provides intervention strategies
-
-## 📈 API Endpoints
-
-- `GET /api/health` - Health check
-- `POST /api/upload` - Upload CSV file
-- `POST /api/predict` - Run predictions
-- `POST /api/train` - Train new model
-- `GET /api/explain/<student_id>` - Get detailed explanation
-
-## 🧪 Testing
-
-Run backend tests:
 ```bash
-cd tests
-pytest -v
+python3 quickstart.py
 ```
 
-Tests cover:
-- Data preprocessing
-- Model training and prediction
-- API endpoints
-- Feature engineering
+## Data format (sample)
 
-## 🔧 Configuration
+At minimum, include these columns in your CSV:
 
-Edit `backend/config.py` or `.env` file:
-
-```
-SECRET_KEY=your-secret-key
-DEBUG=True
-OPENAI_API_KEY=your-openai-api-key
-RISK_THRESHOLD=50
+```csv
+student_id,name,math_marks,science_marks,attendance,total_classes
+1,John Doe,85,90,95,100
+2,Jane Smith,45,50,65,100
 ```
 
-## 📦 Dependencies
+Recommended extra columns: `assignments_completed`, `total_assignments`, `previous_marks`, `class_participation`.
 
-### Backend (Python)
-- Flask - Web framework
-- scikit-learn - ML models
-- pandas - Data manipulation
-- numpy - Numerical computing
-- flask-cors - CORS support
-- openai - GenAI integration (optional)
+## Common commands
 
-### Frontend (React)
-- React 18
-- react-scripts
-- CSS3 for styling
+- Run tests:
 
-## 🎨 Features Highlights
+```bash
+pytest -q
+```
 
-### For Teachers
-- Identify at-risk students early
-- Get personalized intervention strategies
-- Track class performance trends
-- Data-driven decision making
+- Train models with your data:
 
-### For Administrators
-- Class-level analytics
-- Resource allocation insights
-- Performance tracking
-- Evidence-based reporting
+```bash
+python3 train_models.py --data path/to/your/data.csv
+```
 
-### For Counselors
-- Student risk profiles
-- Intervention planning
-- Progress monitoring
-- Holistic support strategies
+## API (useful endpoints)
 
-## 🚦 Model Performance
+- GET /api/health — health check
+- POST /api/upload — multipart form upload (CSV)
+- POST /api/predict — JSON {"filename":"<uploaded.csv>", "model_type":"random_forest"}
+- POST /api/train — trigger model training
+- GET /api/explain/<id> — per-student explanation
 
-Models typically achieve:
-- **Accuracy**: 80-90%
-- **Precision**: 75-85%
-- **Recall**: 80-90%
-- **F1-Score**: 78-87%
+## Troubleshooting
 
-*Note: Performance varies based on data quality and quantity*
+- Port 5000 in use:
 
-## 🔐 Privacy & Ethics
+```bash
+lsof -ti:5000 | xargs kill -9
+```
 
-- Student data is processed locally
-- No data is shared externally (except OpenAI API if enabled)
-- Predictions are tools for human decision-making, not replacements
-- Teachers should verify and contextualize predictions
+- Backend module errors: ensure venv is activated and `pip install -r requirements.txt` ran
+- Frontend dependency issues: delete `node_modules` and reinstall
+- CSV upload problems: check file extension and required column headers
 
-## 🛠️ Troubleshooting
+## Notes on privacy & ethics
 
-**Backend won't start:**
-- Check Python version (3.8+)
-- Verify all dependencies installed
-- Check port 5000 is available
+- By default processing is local. If you enable OpenAI, keys must be provided in `.env` and are used by the GenAI module.
+- Predictions are decision-support only. Use human judgment before acting on model output.
 
-**Frontend won't connect:**
-- Ensure backend is running
-- Check CORS settings
-- Verify API URL in fetch calls
+## Project structure (short)
 
-**Predictions fail:**
-- Check CSV file format
-- Ensure minimum required columns
-- Verify data quality (no corrupted values)
+```
+predictive-student-performance/
+├── backend/
+├── frontend/
+├── genai/
+├── tests/
+├── quickstart.py
+├── train_models.py
+└── setup.sh
+```
 
-## 🤝 Contributing
+## Next steps (suggested)
 
-This is an educational project. Feel free to:
-- Report bugs
-- Suggest features
-- Improve documentation
-- Add new ML models
+1. Run `./setup.sh` or follow manual setup above
+2. Run `python3 quickstart.py` to validate end-to-end
+3. Start the backend and frontend to use the UI
+4. Add your own data and retrain models with `train_models.py`
 
-## 📄 License
+## Contributing
 
-This project is for educational purposes.
+Please open issues and PRs. Add tests for any behavior changes.
 
-## 👨‍💻 Author
+## License & contact
 
-Built as a comprehensive educational AI application demonstrating:
-- Machine Learning (Random Forest, SVM)
-- Web Development (Flask, React)
-- GenAI Integration (RAG, Chatbots)
-- Data Science (pandas, scikit-learn)
-
-## 🔮 Future Enhancements
-
-- [ ] Add more ML models (XGBoost, Neural Networks)
-- [ ] Real-time data streaming
-- [ ] Mobile app version
-- [ ] Advanced visualizations
-- [ ] Multi-language support
-- [ ] Integration with school management systems
-- [ ] Automated report generation
-- [ ] Parent portal
-
-## 📞 Support
-
-For questions or issues:
-1. Check documentation
-2. Review sample data format
-3. Check console logs for errors
-4. Verify environment setup
+- Keep secrets (API keys) out of the repo — use `.env`
+- If you want help, open an issue in this repo or contact the maintainer.
 
 ---
 
-**Built with ❤️ for Education**
+Short and actionable: open http://localhost:3000 after starting the frontend and use the UI to upload a CSV and run predictions.
+
+````
